@@ -21,24 +21,25 @@ import {
 } from "github.com/octarine-public/wrapper/index"
 
 export class UnitWrap {
-	public readonly Sleeper = new Sleeper()
+	public readonly Sleeper: Sleeper
+	public readonly Handle: number
+	public readonly pickSleeperKey = "pick"
+	public readonly moveSleeperKey = "move"
 
-	protected readonly pickUpItems = 400
+	protected readonly pickUpItemsRange = 400
 	private readonly pickUpRuneRange = 150
-	private readonly pickSleeperKey = "pick"
-	private readonly moveSleeperKey = "move"
 
-	constructor(
-		public readonly unit: Unit,
-		public readonly Handle = unit.Handle
-	) {}
+	constructor(public readonly Unit: Unit) {
+		this.Sleeper = new Sleeper()
+		this.Handle = Unit.Index
+	}
 
 	public get IsValid() {
-		return this.unit.IsValid && this.unit.IsAlive && !this.Sleeper.Sleeping(this.pickSleeperKey)
+		return this.Unit.IsValid && this.Unit.IsAlive && !this.Sleeper.Sleeping(this.pickSleeperKey)
 	}
 
 	public CanPickRune(rune: Rune) {
-		return this.ShouldPick(rune) && this.unit.Distance(rune) <= this.pickUpRuneRange
+		return this.ShouldPick(rune) && this.Unit.Distance(rune) <= this.pickUpRuneRange
 	}
 
 	public CanPickItem(physicalItem: PhysicalItem) {
@@ -47,9 +48,9 @@ export class UnitWrap {
 		}
 
 		const phyitem = physicalItem.Item
-		const Inventory = this.unit.Inventory
+		const Inventory = this.Unit.Inventory
 
-		const position = GetPositionHeight(this.unit.Position)
+		const position = GetPositionHeight(this.Unit.Position)
 		if (phyitem === undefined || physicalItem.Position.Floor().z > position) {
 			return false
 		}
@@ -60,7 +61,7 @@ export class UnitWrap {
 		if (phyitem?.IsNeutralDrop) {
 			if (IsFreeSlotsBackpack || Inventory.NeutralItem === undefined) {
 				if (!this.Sleeper.Sleeping(this.moveSleeperKey)) {
-					const time = Math.floor(physicalItem.Position.Distance2D(this.unit.Position) / this.unit.Speed)
+					const time = Math.floor(physicalItem.Position.Distance2D(this.Unit.Position) / this.Unit.Speed)
 					this.Sleeper.Sleep(time, this.moveSleeperKey)
 				}
 				return true
@@ -90,11 +91,11 @@ export class UnitWrap {
 				return false
 			}
 
-			this.unit.MoveItem(itemMove, Inventory.FreeSlotsBackpack[0])
+			this.Unit.MoveItem(itemMove, Inventory.FreeSlotsBackpack[0])
 			return true
 		}
 
-		if (phyitem instanceof item_cheese || (phyitem instanceof item_ultimate_scepter_roshan && this.unit.HasScepter)) {
+		if (phyitem instanceof item_cheese || (phyitem instanceof item_ultimate_scepter_roshan && this.Unit.HasScepter)) {
 			return Inventory.FreeSlotsInventory.length !== 0 || Inventory.FreeSlotsBackpack.length !== 0
 		}
 
@@ -106,15 +107,15 @@ export class UnitWrap {
 	}
 
 	public Pick(item: PhysicalItem | Rune) {
-		const isNeutralDrop = item instanceof PhysicalItem && item.Item?.IsNeutralDrop && !this.unit.IsInvisible
+		const isNeutralDrop = item instanceof PhysicalItem && item.Item?.IsNeutralDrop && !this.Unit.IsInvisible
 
 		if (item instanceof PhysicalItem) {
-			this.unit.PickupItem(item)
+			this.Unit.PickupItem(item)
 			if (isNeutralDrop) {
-				this.unit.AttackMove(Input.CursorOnWorld, isNeutralDrop)
+				this.Unit.AttackMove(Input.CursorOnWorld, isNeutralDrop)
 			}
 		} else {
-			this.unit.PickupRune(item)
+			this.Unit.PickupRune(item)
 		}
 
 		this.Sleeper.Sleep(Math.randomRange(0.133, 0.2), this.pickSleeperKey)
@@ -124,14 +125,14 @@ export class UnitWrap {
 		if (!entity.IsValid || !entity.IsVisible) {
 			return false
 		}
-		const distance2D = this.unit.Distance(entity.Position)
-		if (distance2D > this.pickUpItems) {
+		const distance2D = this.Unit.Distance(entity.Position)
+		if (distance2D > this.pickUpItemsRange) {
 			return false
 		}
-		if (this.unit.IsStunned || this.unit.IsHexed || this.unit.IsInAbilityPhase) {
+		if (this.Unit.IsStunned || this.Unit.IsHexed || this.Unit.IsInAbilityPhase) {
 			return false
 		}
-		if (this.unit.IsCharge || this.unit.IsChanneling || this.unit.IsInvulnerable) {
+		if (this.Unit.IsCharge || this.Unit.IsChanneling || this.Unit.IsInvulnerable) {
 			return false
 		}
 		return true

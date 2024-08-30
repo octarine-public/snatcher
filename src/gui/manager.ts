@@ -9,6 +9,10 @@ export class GUIManager {
 	public readonly Status: StatusGUI
 
 	public Draw(): void {
+		if (!this.menuManager.State.value) {
+			return
+		}
+
 		this.Status.Draw({ menu: this.menuManager })
 	}
 }

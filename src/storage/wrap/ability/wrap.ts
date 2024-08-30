@@ -19,7 +19,7 @@ export class AbilityWrap {
 		return `ability-${this.Ability.Handle}`
 	}
 
-	public UseAbility(unit: Unit, spawner: Vector3, isIgnoreDamage: boolean): void {
+	public UseAbility(unit: Unit, spawner: Vector3, isIgnoreDamage: boolean = false): void {
 		if (this.Owner === undefined || this.Sleeper.Sleeping(this.SleeperKey)) {
 			return
 		}

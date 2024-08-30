@@ -1,4 +1,4 @@
-import { Menu } from "github.com/octarine-public/wrapper/index"
+import { Ability, Menu } from "github.com/octarine-public/wrapper/index"
 
 import { BaseMenu } from "./base"
 
@@ -14,4 +14,8 @@ export class RunesMenu extends BaseMenu {
 
 	public readonly Types: Menu.Dropdown
 	public readonly Abilities: Menu.ImageSelector
+
+	public IsAbilityEnabled(ability: Ability): boolean {
+		return this.Abilities.IsEnabled(ability.Name)
+	}
 }

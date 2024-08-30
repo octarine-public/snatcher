@@ -1,4 +1,4 @@
-import { Menu, PhysicalItem, Sleeper } from "github.com/octarine-public/wrapper/index"
+import { Ability, Menu, PhysicalItem, Sleeper } from "github.com/octarine-public/wrapper/index"
 
 import { RunesMenu } from "./runes"
 import { StatusMenu } from "./status"
@@ -33,13 +33,13 @@ export class MenuManager {
 
 		this.Abilities = this.Tree.AddImageSelector(
 			"Abilities",
-			abilitiesDefaults.keys().toArray(),
+			[...abilitiesDefaults.keys()],
 			abilitiesDefaults,
 			"Abilities to steal aegis"
 		)
 		this.Items = this.Tree.AddImageSelector(
 			"Items",
-			itemsDefaults.keys().toArray(),
+			[...itemsDefaults.keys()],
 			itemsDefaults,
 			"Items to catch from drop"
 		)
@@ -87,13 +87,13 @@ export class MenuManager {
 	public readonly KeyMode: Menu.Dropdown
 
 	public IsItemEnabled(item: PhysicalItem): boolean {
-		if (item.Item === undefined) {
-			return false
-		}
-
 		return (
 			item.Item !== undefined &&
 			((item.Item.IsNeutral && this.UseNeutralItems.value) || this.Items.IsEnabled(item.Item.Name))
 		)
+	}
+
+	public IsAbilityEnabled(ability: Ability): boolean {
+		return this.Abilities.IsEnabled(ability.Name)
 	}
 }
