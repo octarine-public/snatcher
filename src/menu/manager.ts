@@ -1,4 +1,4 @@
-import { Menu, Sleeper } from "github.com/octarine-public/wrapper/index"
+import { Menu, PhysicalItem, Sleeper } from "github.com/octarine-public/wrapper/index"
 
 import { RunesMenu } from "./runes"
 import { StatusMenu } from "./status"
@@ -85,4 +85,15 @@ export class MenuManager {
 
 	public readonly KeyBind: Menu.KeyBind
 	public readonly KeyMode: Menu.Dropdown
+
+	public IsItemEnabled(item: PhysicalItem): boolean {
+		if (item.Item === undefined) {
+			return false
+		}
+
+		return (
+			item.Item !== undefined &&
+			((item.Item.IsNeutral && this.UseNeutralItems.value) || this.Items.IsEnabled(item.Item.Name))
+		)
+	}
 }
