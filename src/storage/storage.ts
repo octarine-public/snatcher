@@ -1,6 +1,6 @@
 import { Item, Rune } from "github.com/octarine-public/wrapper"
 
-import { AbilityWrap } from "./wrap/ability/ability"
+import { AbilityWrap } from "./wrap/ability/wrap"
 import { UnitWrap } from "./wrap/unit/unit"
 
 export class Storage {

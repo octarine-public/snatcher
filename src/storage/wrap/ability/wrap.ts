@@ -1,4 +1,4 @@
-import { Ability, Sleeper, Unit, Vector3 } from "github.com/octarine-public/wrapper"
+import { Ability, Sleeper, Unit, Vector3 } from "github.com/octarine-public/wrapper/index"
 
 export class AbilityWrap {
 	constructor(
@@ -12,15 +12,15 @@ export class AbilityWrap {
 	protected readonly SleepTime: number = 0.133
 
 	public get CanBeCasted(): boolean {
-		return this.Ability.IsValid && this.Ability.CanBeCasted() && !this.Sleeper.Sleeping(this.sleeperKey)
+		return this.Ability.IsValid && this.Ability.CanBeCasted() && !this.Sleeper.Sleeping(this.SleeperKey)
 	}
 
-	private get sleeperKey(): string {
+	protected get SleeperKey(): string {
 		return `ability-${this.Ability.Handle}`
 	}
 
 	public UseAbility(unit: Unit, spawner: Vector3, isIgnoreDamage: boolean): void {
-		if (this.Owner === undefined) {
+		if (this.Owner === undefined || this.Sleeper.Sleeping(this.SleeperKey)) {
 			return
 		}
 
@@ -34,14 +34,15 @@ export class AbilityWrap {
 		}
 
 		this.Owner.CastPosition(this.Ability, pos)
-		this.Sleeper.Sleep(this.SleepTime, this.sleeperKey)
+		this.Sleeper.Sleep(this.SleepTime, this.SleeperKey)
 	}
 
 	public UseAbilityToSpawner(spawner: Vector3) {
 		if (this.Owner === undefined || this.Owner.Distance(spawner) > this.Ability.CastRange) {
 			return
 		}
+
 		this.Owner.CastPosition(this.Ability, spawner)
-		this.Sleeper.Sleep(Math.randomRange(this.SleepTime, 0.2), this.sleeperKey)
+		this.Sleeper.Sleep(this.SleepTime, this.SleeperKey)
 	}
 }
