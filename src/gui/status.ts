@@ -34,7 +34,7 @@ export class StatusGUI extends BaseGUI<{ menu: MenuManager }, StatusMenu> {
 
 			const stateText: string = state ? Menu.Localization.Localize("On") : Menu.Localization.Localize("Off")
 			const keyText: string =
-				assignedKey !== "None" ? `(${Menu.Localization.Localize("Key")}): ` + assignedKey + ")" : ""
+				assignedKey !== "None" ? `(${Menu.Localization.Localize("Key")}): ${assignedKey}` : ""
 
 			return `Snatcher: ${stateText} ${keyText}`
 		})()
